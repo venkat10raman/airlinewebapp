@@ -3,17 +3,31 @@ package com.venkat.airlinewebapp.dto;
 import java.time.LocalDate;
 import java.util.Objects;
 
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.venkat.airlinewebapp.validation.FlightMfdBy;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.PositiveOrZero;
 
 public class FlightDto {
+	
 	private Integer id;
 
+	@NotNull(message = "Flight Number should be provided")
 	private String flightNumber;
 
+	@NotNull
+	@PositiveOrZero(message = "Invalid Capacity value")
 	private Integer capacity;
 
+	@NotNull
+	@FlightMfdBy
 	private String mfdBy;
 	
+	@NotNull
+	@Past(message="Date cannnot be a future value")
 	@JsonFormat(pattern = "MM/dd/yyyy")
 	private LocalDate mfdOn;
 
