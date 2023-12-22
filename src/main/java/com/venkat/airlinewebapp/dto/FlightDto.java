@@ -3,6 +3,7 @@ package com.venkat.airlinewebapp.dto;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.venkat.airlinewebapp.validation.FlightMfdBy;
@@ -11,7 +12,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.PositiveOrZero;
 
-public class FlightDto {
+public class FlightDto extends RepresentationModel<FlightDto> {
 	
 	private Integer id;
 

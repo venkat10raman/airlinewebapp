@@ -3,6 +3,9 @@ package com.venkat.airlinewebapp.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,32 +32,46 @@ public class FlightController {
 
 	@GetMapping(path = "/flight/{id}")
 	public ResponseEntity<FlightDto> getFlight(@PathVariable(name="id") @Positive Integer flightId) {
+		Link link = linkTo(methodOn(FlightController.class).getFlight(flightId)).withSelfRel();
 		FlightDto flightDto = flightService.getFlight(flightId);
+		flightDto.add(link);
 		return ResponseEntity.ok().body(flightDto);
 	}
 	
 	@GetMapping(path = "/flight")
 	public ResponseEntity<List<FlightDto>> getAllFlights() {
 		List<FlightDto> flights = flightService.getAllFlights();
+		
+		for(FlightDto dto : flights) {
+			Link linkById = linkTo(methodOn(FlightController.class).getFlight(dto.getId())).withSelfRel();
+			dto.add( linkById);
+		}
+		
 		return ResponseEntity.ok(flights);
 	}
 	
 	@GetMapping(path = "/flight/flightData/{flightNumber}")
 	public ResponseEntity<FlightDto> getFlightByFlightNumber(@PathVariable(name="flightNumber") String flightNumber) {
 		FlightDto flightDto = flightService.getFlightByflightNumber(flightNumber);
+		Link link = linkTo(methodOn(FlightController.class).getFlightByFlightNumber(flightNumber)).withSelfRel();
+		flightDto.add(link);
 		return ResponseEntity.ok(flightDto);
 	}
 	
 	@PostMapping(path = "/flight")
 	public ResponseEntity<FlightDto> createFlight(@RequestBody @Valid FlightDto flightDto) {
-		FlightDto flight = flightService.createFlight(flightDto);
-		return ResponseEntity.ok(flight);
+		FlightDto dto = flightService.createFlight(flightDto);
+		Link link = linkTo(methodOn(FlightController.class).getFlight(dto.getId())).withSelfRel();
+		dto.add(link);
+		return ResponseEntity.ok(dto);
 	}
 
 	@PutMapping(path = "/flight")
 	public ResponseEntity<FlightDto> updateFlight(@RequestBody @Valid FlightDto flightDto) {
-		FlightDto flight = flightService.updateFlight(flightDto);
-		return ResponseEntity.ok(flight);
+		FlightDto dto = flightService.updateFlight(flightDto);
+		Link link = linkTo(methodOn(FlightController.class).getFlight(dto.getId())).withSelfRel();
+		dto.add(link);
+		return ResponseEntity.ok(dto);
 	}
 
 	@DeleteMapping(path = "/flight/delete/{id}")
