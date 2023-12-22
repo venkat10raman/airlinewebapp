@@ -7,7 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -19,6 +20,8 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
@@ -27,11 +30,41 @@ import jakarta.validation.ConstraintViolationException;
 @RestControllerAdvice(basePackages = "com.venkat.airlinewebapp")
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 
+	private static final Logger logger = LogManager.getLogger(ApiExceptionHandler.class);
+	
+	
 	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+	protected ResponseEntity<Object> handleNoResourceFoundException(
+			NoResourceFoundException ex, 
+			HttpHeaders headers,
+			HttpStatusCode status, 
+			WebRequest request) {
+		
+		logger.warn("handleNoResourceFoundException...");
+		
+		List<String> errors = Arrays.asList(ex.getLocalizedMessage());
 
-		System.out.println("handleMethodArgumentNotValid....");
+		HttpServletRequest req = ((ServletWebRequest)request).getRequest();
+
+		ApiErrorResponse  apiError = ApiErrorResponseBuilder.getInstance()
+				.withErrorId("Airline-"+LocalDateTime.now(ZoneOffset.UTC))
+				.forPath(req.getRequestURI())
+				.withErrors(errors)
+				.withMessage(ex.getMessage())
+				.withStatus(status.value())
+				.build();
+
+
+		return new ResponseEntity<Object>(apiError,headers,status);
+	}
+
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(
+			MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatusCode status, 
+			WebRequest request) {
+
+		logger.warn("handleMethodArgumentNotValid....");
 
 		List<String> errors = ex.getBindingResult()
 				.getAllErrors().stream()
@@ -53,9 +86,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 	}
 
 	@ExceptionHandler(ResponseStatusException.class)
-	public ResponseEntity<ApiErrorResponse> handleResponseStatusException(ResponseStatusException ex, HttpServletRequest request){
+	public ResponseEntity<ApiErrorResponse> handleResponseStatusException(
+			ResponseStatusException ex, 
+			HttpServletRequest request){
 
-		System.out.println("handleResponseStatusException....");
+		logger.warn("handleResponseStatusException....");
 
 		List<String> errors = Arrays.asList(ex.getReason());
 
@@ -71,9 +106,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 	}
 
 	@ExceptionHandler(ConstraintViolationException.class)
-	public ResponseEntity<ApiErrorResponse> handleConstraintViolationException(ConstraintViolationException ex, HttpServletRequest request){
+	public ResponseEntity<ApiErrorResponse> handleConstraintViolationException(
+			ConstraintViolationException ex, 
+			HttpServletRequest request){
 
-		System.out.println("handleConstraintViolationException....");
+		logger.warn("handleConstraintViolationException....");
 
 		List<String> errors = new ArrayList<>();
 		for(ConstraintViolation<?> violation : ex.getConstraintViolations()) {
@@ -93,11 +130,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ApiErrorResponse> handleException(Exception ex , HttpServletRequest request){
-		System.out.println("handleException....");
+	public ResponseEntity<ApiErrorResponse> handleException(
+			Exception ex , 
+			HttpServletRequest request){
+		
+		logger.warn("handleException....");
 
 		List<String> errors = Arrays.asList(ex.getMessage());
-
 
 		ApiErrorResponse  apiError = ApiErrorResponseBuilder.getInstance()
 				.withErrorId("Airline-"+LocalDateTime.now(ZoneOffset.UTC))
@@ -108,6 +147,5 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 				.build();
 
 		return new ResponseEntity<ApiErrorResponse>(apiError,HttpStatus.INTERNAL_SERVER_ERROR);
-
 	}
 }
