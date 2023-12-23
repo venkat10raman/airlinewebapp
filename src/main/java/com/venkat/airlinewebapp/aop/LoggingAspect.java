@@ -20,16 +20,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class LoggingAspect {
 
-	private static final Logger logger = LogManager.getLogger(LoggingAspect.class);
+private static final Logger logger = LogManager.getLogger(LoggingAspect.class);
 	
 	@Pointcut("within(com.venkat.airlinewebapp.controller.*)")
-	public void applicaitonControllerPackage() {
-		
-	}
+	public void applicaitonControllerPackage() {}
+	
 	@Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
-	public void applicaitonControllerBean() {
-		
-	}
+	public void applicaitonControllerBean() {}
 	
 	@Around("applicaitonControllerBean() && applicaitonControllerPackage()")
 	public Object logAround(ProceedingJoinPoint joinpoint) throws Throwable {
@@ -56,11 +53,12 @@ public class LoggingAspect {
 	
 	@Pointcut("within(com.venkat.airlinewebapp..*)")
 	//@Pointcut("execution(* com.venkat.airlinewebapp.controller.FlightController.*(..))")
-	public void applicaitonExceptionPackage() {
-		
-	}
+	public void applicaitonExceptionPackage() {}
 	
-	@AfterThrowing(pointcut = "applicaitonExceptionPackage()",throwing = "e")
+	@Pointcut("this(org.springframework.web.filter.GenericFilterBean)")
+	private void genericFilterBeanImpl() {}
+	
+	@AfterThrowing(pointcut = "applicaitonExceptionPackage() && !genericFilterBeanImpl()",throwing = "e")
 	public void logAfterThrowing(JoinPoint joinpoint, Throwable e) {
 		logger.error("Exception in {}.{} with cause = {} , with message = {}",
 				joinpoint.getSignature().getDeclaringTypeName(),joinpoint.getSignature().getName(),

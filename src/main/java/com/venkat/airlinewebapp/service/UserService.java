@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,10 +58,8 @@ public class UserService implements IUserService {
 		
 		user.setRoles(roles);
 		user.setEnabled(true);
-		String password  = RandomStringUtils.random(7,true,true);
-		logger.info("Password = "+password);
 		
-		user.setPassword(passwordEncoder.encode(password));
+		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 		
 		user = userRepo.save(user);
 		userDto = this.getUserDto(user);
@@ -117,6 +114,9 @@ public class UserService implements IUserService {
 		for(RoleDto rDto : userDto.getRoles()) {
 			rSet.add(roleRepo.findByName(rDto.getName()));
 		}
+		
+		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+		
 		user.setRoles(rSet);
 		user = userRepo.save(user);
 		userDto.setId(user.getId());
