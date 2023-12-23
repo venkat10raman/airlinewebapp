@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -33,6 +34,9 @@ public class UserService implements IUserService {
 	
 	@Autowired
 	private IRoleRepository roleRepo;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Override
 	public UserDto createUser(UserDto userDto) {
@@ -58,7 +62,7 @@ public class UserService implements IUserService {
 		String password  = RandomStringUtils.random(7,true,true);
 		logger.info("Password = "+password);
 		
-		user.setPassword(password);
+		user.setPassword(passwordEncoder.encode(password));
 		
 		user = userRepo.save(user);
 		userDto = this.getUserDto(user);
@@ -118,6 +122,11 @@ public class UserService implements IUserService {
 		userDto.setId(user.getId());
 		
 		return userDto;
+	}
+	
+	@Override
+	public UserDto findUserByUserName(String userName) {
+		return this.getUserDto(this.userRepo.findUserByUserName(userName));
 	}
 	
 }
