@@ -32,7 +32,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 
 	private static final Logger logger = LogManager.getLogger(ApiExceptionHandler.class);
 	
-	
 	@Override
 	protected ResponseEntity<Object> handleNoResourceFoundException(
 			NoResourceFoundException ex, 

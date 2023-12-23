@@ -10,8 +10,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 
 
-@Entity(name = "authority")
-public class Authority implements Serializable {
+@Entity(name = "app_authority")
+public class AppAuthority implements Serializable {
 	private static final long serialVersionUID = -3278564974606393621L;
 
 	@Id
@@ -21,18 +21,18 @@ public class Authority implements Serializable {
 	private String name;
 
 	@ManyToMany(mappedBy = "authorities")
-	private Set<Role> roles;
+	private Set<AppRole> roles;
 
-	public Authority() {
+	public AppAuthority() {
 		super();
 	}
 
-	public Authority(String name) {
+	public AppAuthority(String name) {
 		super();
 		this.name = name;
 	}
 
-	public Authority(String name, Set<Role> roles) {
+	public AppAuthority(String name, Set<AppRole> roles) {
 		super();
 		this.name = name;
 		this.roles = roles;
@@ -54,11 +54,11 @@ public class Authority implements Serializable {
 		this.name = name;
 	}
 
-	public Set<Role> getRoles() {
+	public Set<AppRole> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<Role> roles) {
+	public void setRoles(Set<AppRole> roles) {
 		this.roles = roles;
 	}
 
@@ -78,7 +78,7 @@ public class Authority implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Authority other = (Authority) obj;
+		AppAuthority other = (AppAuthority) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

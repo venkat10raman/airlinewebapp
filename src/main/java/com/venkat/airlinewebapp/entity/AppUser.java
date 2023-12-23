@@ -12,8 +12,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 
-@Entity(name = "user")
-public class User implements Serializable {
+@Entity(name = "app_user")
+public class AppUser implements Serializable {
 
 	private static final long serialVersionUID = 3295939280278710606L;
 
@@ -38,7 +38,7 @@ public class User implements Serializable {
 			name = "users_roles", 
 			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-	private Set<Role> roles;
+	private Set<AppRole> roles;
 
 	public Integer getId() {
 		return id;
@@ -99,11 +99,11 @@ public class User implements Serializable {
 		this.enabled = enabled;
 	}
 
-	public Set<Role> getRoles() {
+	public Set<AppRole> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<Role> roles) {
+	public void setRoles(Set<AppRole> roles) {
 		this.roles = roles;
 	}
 
@@ -123,7 +123,7 @@ public class User implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		User other = (User) obj;
+		AppUser other = (AppUser) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

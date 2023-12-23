@@ -13,8 +13,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 
-@Entity(name = "role")
-public class Role implements Serializable {
+@Entity(name = "app_role")
+public class AppRole implements Serializable {
 
 	private static final long serialVersionUID = 5191365184969566982L;
 
@@ -25,14 +25,14 @@ public class Role implements Serializable {
 	private String name;
 
 	@ManyToMany(mappedBy = "roles")
-	private Collection<User> users;
+	private Collection<AppUser> users;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
 			name = "roles_authorities", 
 			joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"), 
 			inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
-	private Set<Authority> authorities;
+	private Set<AppAuthority> authorities;
 
 	public Integer getId() {
 		return id;
@@ -50,19 +50,19 @@ public class Role implements Serializable {
 		this.name = name;
 	}
 
-	public Collection<User> getUsers() {
+	public Collection<AppUser> getUsers() {
 		return users;
 	}
 
-	public void setUsers(Collection<User> users) {
+	public void setUsers(Collection<AppUser> users) {
 		this.users = users;
 	}
 
-	public Set<Authority> getAuthorities() {
+	public Set<AppAuthority> getAuthorities() {
 		return authorities;
 	}
 
-	public void setAuthorities(Set<Authority> authorities) {
+	public void setAuthorities(Set<AppAuthority> authorities) {
 		this.authorities = authorities;
 	}
 
@@ -82,7 +82,7 @@ public class Role implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Role other = (Role) obj;
+		AppRole other = (AppRole) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
