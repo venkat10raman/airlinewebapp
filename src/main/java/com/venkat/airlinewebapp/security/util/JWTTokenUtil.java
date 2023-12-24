@@ -104,7 +104,9 @@ public class JWTTokenUtil {
 
 	public Boolean validateToken(String token, AppUserPrinciple userPrinciple) {
 		String userName = this.getUserNameFromToken(token);
-		return StringUtils.isNotBlank(userName) && userName.equals(userPrinciple.getUsername()) && !this.isTokenExpired(token);
+		return StringUtils.isNotBlank(userName) 
+				&& userName.equals(userPrinciple.getUsername()) 
+				&& !this.isTokenExpired(token);
 
 	}
 	

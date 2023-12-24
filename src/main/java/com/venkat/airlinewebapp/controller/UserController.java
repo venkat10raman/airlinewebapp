@@ -60,6 +60,7 @@ public class UserController {
 			String jwtToken = this.jwtTokenUtil.generateToken(new AppUserPrinciple(user));
 			HttpHeaders headers = new HttpHeaders();
 			headers.add("Authorization", "Bearer "+jwtToken);
+			
 			return ResponseEntity.ok().headers(headers).body(user);
 		} else { 
             throw new UsernameNotFoundException("invalid user request !"); 

@@ -9,6 +9,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -147,6 +148,7 @@ public class FlightController {
 					mediaType=MediaType.APPLICATION_JSON_VALUE))
 	})
 	@PutMapping(path = "/flight",consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+	@PreAuthorize("hasAuthority('flight_update')")
 	public ResponseEntity<FlightDto> updateFlight(
 			@Parameter(name="flightDto" , description = "Flight Dto in the request body",
 			required=true, content = @Content(schema = @Schema(implementation = FlightDto.class)), 

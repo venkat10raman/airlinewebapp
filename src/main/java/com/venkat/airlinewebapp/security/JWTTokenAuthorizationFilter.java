@@ -43,8 +43,9 @@ public class JWTTokenAuthorizationFilter extends OncePerRequestFilter {
 		if(request.getMethod().equalsIgnoreCase("OPTIONS")) {
 			response.setStatus(HttpStatus.OK.value());
 		} else {
-
-			String requestToken = request.getHeader("Authorization"); //"Bearer asdf3436sdfgdg2564356...."
+			
+			//"Bearer asdf3436sdfgdg2564356...."
+			String requestToken = request.getHeader("Authorization");
 
 			String userName = null;
 			String jwtToken = null;
