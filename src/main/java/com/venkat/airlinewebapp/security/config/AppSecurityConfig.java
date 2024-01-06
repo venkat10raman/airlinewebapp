@@ -29,7 +29,13 @@ import com.venkat.airlinewebapp.service.UserPrincipleServiceImpl;
 @EnableMethodSecurity(jsr250Enabled = true, securedEnabled = true)
 public class AppSecurityConfig {
 
-	private static final String[] PUBLIC_URLS = {"/login"};
+	private static final String[] PUBLIC_URLS = {
+			"/login", "/error",
+			"/airline/swagger-ui.html",
+			"/airline/swagger-ui/**",
+			"/v3/flight-api-docs",
+			"/v3/flight-api-docs/**"
+	};
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {

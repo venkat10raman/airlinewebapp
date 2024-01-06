@@ -7,8 +7,8 @@
                 pattern="%style{%d{ISO8601}}{black} %highlight{%-5level }[%style{%t}{bright,blue}] %style{%X{requestId}}{bright,red} %style{%C{1.}}{bright,yellow}: %msg%n%throwable" />
 		</Console>
 		<RollingFile name="RollingFile"
-            fileName="c://work/logs/spring-boot-logger-log4j2.log"
-            filePattern="c://work/logs/$${date:yyyy-MM}/spring-boot-logger-log4j2-%d{-dd-MMMM-yyyy}-%i.log.gz">
+            fileName="airlinewebapp.log"
+            filePattern="c://work/logs/$${date:yyyy-MM}/airlinewebapp-%d{dd-MMMM-yyyy}-%i.log.gz">
             <PatternLayout>
                 <pattern>%d %p %C{1.} [%t] %m%n</pattern>
             </PatternLayout>

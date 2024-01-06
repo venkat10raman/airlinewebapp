@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +25,6 @@ import jakarta.validation.ConstraintViolationException;
 @RestControllerAdvice(basePackages = "com.venkat.airlinewebapp")
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 
-	private static final Logger logger = LogManager.getLogger(ApiExceptionHandler.class);
 
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -101,25 +97,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 				.build();
 		
 		return new ResponseEntity<ApiErrorResponse>(apiError,HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-
-	@Override
-	protected ResponseEntity<Object> handleNoHandlerFoundException(
-			NoHandlerFoundException ex, HttpHeaders headers,
-			HttpStatusCode status, WebRequest req) {
-		
-		HttpServletRequest request = ((ServletWebRequest) req).getRequest();
-		List<String> errors = Arrays.asList(ex.getMessage());
-
-		ApiErrorResponse apiError = ApiErrorResponseBuilder.getInstance()
-				.withErrorId("Airline-" + ThreadContext.get("requestid"))
-				.forPath(request.getRequestURI())
-				.withErrors(errors)
-				.withMessage(ex.getMessage())
-				.withStatus(status.value())
-				.build();
-
-		return new ResponseEntity<Object>(apiError, status);
 	}
 	
 }

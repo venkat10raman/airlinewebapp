@@ -60,6 +60,7 @@ public class FlightController {
 							mediaType = MediaType.APPLICATION_JSON_VALUE))
 	})
 	@GetMapping(path = "/flight/{id}")
+	@PreAuthorize("hasAuthority('flight_read')")
 	public ResponseEntity<FlightDto> getFlight(@PathVariable(name="id") @Positive Integer flightId) {
 		Link link = linkTo(methodOn(FlightController.class).getFlight(flightId)).withSelfRel();
 		FlightDto flightDto = flightService.getFlight(flightId);
@@ -83,6 +84,7 @@ public class FlightController {
 							mediaType = MediaType.APPLICATION_JSON_VALUE))
 	})
 	@GetMapping(path = "/flight")
+	@PreAuthorize("hasAuthority('flight_read')")
 	public ResponseEntity<List<FlightDto>> getAllFlights() {
 		List<FlightDto> flights = flightService.getAllFlights();
 		
@@ -108,6 +110,7 @@ public class FlightController {
 					mediaType=MediaType.APPLICATION_JSON_VALUE))
 	})
 	@GetMapping(path = "/flight/flightData/{flightNumber}")
+	@PreAuthorize("hasAuthority('flight_read')")
 	public ResponseEntity<FlightDto> getFlightByFlightNumber(@PathVariable(name="flightNumber") String flightNumber) {
 		FlightDto flightDto = flightService.getFlightByflightNumber(flightNumber);
 		Link link = linkTo(methodOn(FlightController.class).getFlightByFlightNumber(flightNumber)).withSelfRel();
@@ -128,6 +131,7 @@ public class FlightController {
 					mediaType=MediaType.APPLICATION_JSON_VALUE))
 	})
 	@PostMapping(path = "/flight", consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
+	@PreAuthorize("hasAuthority('flight_create')")
 	public ResponseEntity<FlightDto> createFlight(@RequestBody @Valid FlightDto flightDto) {
 		FlightDto dto = flightService.createFlight(flightDto);
 		Link link = linkTo(methodOn(FlightController.class).getFlight(dto.getId())).withSelfRel();
@@ -172,6 +176,7 @@ public class FlightController {
 					mediaType=MediaType.APPLICATION_JSON_VALUE))
 	})
 	@DeleteMapping(path = "/flight/delete/{id}")
+	@PreAuthorize("hasAuthority('flight_delete')")
 	public void deleteFlight(@PathVariable(name="id") @Positive Integer flightId) {
 		flightService.deleteFlight(flightId);
 		
