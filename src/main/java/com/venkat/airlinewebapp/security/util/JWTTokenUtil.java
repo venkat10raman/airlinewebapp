@@ -27,6 +27,12 @@ public class JWTTokenUtil {
 
 	@Value("${jwt.secretKey}")
 	private String secretKey;
+	
+	@Value("${jwt.acces-token.expiration}")
+	private long accessTokenExpiration;
+	
+	@Value("${jwt.refresh-token.expiration}")
+	private long refreshTokenExpiration;
 
 	public String generateToken(AppUserPrinciple userPrinciple) {
 
@@ -50,7 +56,7 @@ public class JWTTokenUtil {
 				.addClaims(claims)
 				.setSubject(subject)
 				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + (5 * 60 * 60 * 1000)))
+				.setExpiration(new Date(System.currentTimeMillis() + (accessTokenExpiration)))
 				.signWith(getSignKey())
 				.compact();
 	}

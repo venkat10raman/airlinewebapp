@@ -16,7 +16,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.venkat.airlinewebapp.entity.AppToken;
 import com.venkat.airlinewebapp.security.util.JWTTokenUtil;
+import com.venkat.airlinewebapp.service.ITokenService;
 import com.venkat.airlinewebapp.service.UserPrincipleServiceImpl;
 
 import jakarta.servlet.FilterChain;
@@ -34,6 +36,9 @@ public class JWTTokenAuthorizationFilter extends OncePerRequestFilter {
 
 	@Autowired
 	private UserPrincipleServiceImpl userPrincipleService;
+	
+	@Autowired
+	private ITokenService tokenService;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,
@@ -60,9 +65,11 @@ public class JWTTokenAuthorizationFilter extends OncePerRequestFilter {
 			if(userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
 				UserDetails userDetails =  this.userPrincipleService.loadUserByUsername(userName);
-				
-				if(userDetails !=null && this.jwtTokenUtil.validateToken(jwtToken, userDetails.getUsername())) {
-
+				AppToken appToken = tokenService.findByTokenValue(jwtToken).orElse(null);
+				Boolean isTokenValid = this.jwtTokenUtil.validateToken(jwtToken, userDetails.getUsername());
+				Boolean isTokenNotExpired = appToken != null && !appToken.isExpired();
+				if(userDetails !=null && isTokenValid && isTokenNotExpired) {
+					
 					List<GrantedAuthority> authorities = this.jwtTokenUtil.getAuthoritiesClaimFromToken(jwtToken);
 
 					UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userName, null, authorities);

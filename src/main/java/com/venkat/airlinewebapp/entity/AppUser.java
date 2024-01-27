@@ -1,6 +1,7 @@
 package com.venkat.airlinewebapp.entity;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
@@ -11,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 
 @Entity(name = "app_user")
 public class AppUser implements Serializable {
@@ -39,6 +41,9 @@ public class AppUser implements Serializable {
 			joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Set<AppRole> roles;
+	
+	@OneToMany(mappedBy = "user")
+	private List<AppToken> tokenList;
 
 	public Integer getId() {
 		return id;
